@@ -9,15 +9,30 @@ class MethodChannelAojDevicePlugin extends AojDevicePluginPlatform {
   @visibleForTesting
   final methodChannel = const MethodChannel('aoj_device_plugin');
 
+  //final eventChannel = const EventChannel('aoj_device_plugin_stream');
+
   @override
   Future<String?> getPlatformVersion() async {
     final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
 
+  @override
+  Future<String?> connectToDevice(dynamic device) async {
+    final result = await methodChannel.invokeMethod<String>('connectToDevice', <String, dynamic>{
+      'arg1': device,
+    });
+    return result;
+  }
+
   MethodChannelAojDevicePlugin() {
     setupListener();
   }
+/*
+  @override
+  Stream<dynamic> aojDevicePluginStream() {
+    return eventChannel.receiveBroadcastStream();
+  }*/
 
   void setupListener() {
     methodChannel.setMethodCallHandler(_handleMethod);
@@ -28,7 +43,6 @@ class MethodChannelAojDevicePlugin extends AojDevicePluginPlatform {
       case 'onBluetoothDeviceFound':
         _handleDeviceFound(call.arguments);
         break;
-    // Handle other method calls if necessary
     }
   }
 
