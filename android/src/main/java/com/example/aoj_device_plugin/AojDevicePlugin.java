@@ -62,7 +62,7 @@ public class AojDevicePlugin implements FlutterPlugin, MethodCallHandler, Stream
     AHDevicePlugin.getInstance().initPlugin(context);
     AHDevicePlugin.getInstance().registerReceiver(context);
     AHDevicePlugin.getInstance().registerMessageService();
-    Log.d("DEBUG", "AOJ SDK Version:" + plugin.getVersion());
+    Log.d("DEBUG", "AOJ SDK Version:" + AHDevicePlugin.getInstance().getVersion());
     AHDevicePlugin.getInstance().openDebugMode("plugin.debug");
 
     // Method channel for Flutter
