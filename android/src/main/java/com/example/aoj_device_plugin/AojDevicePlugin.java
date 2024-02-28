@@ -49,7 +49,6 @@ public class AojDevicePlugin implements FlutterPlugin, MethodCallHandler, Stream
   /// when the Flutter Engine is detached from the Activity
   private MethodChannel methodChannel;
   private EventChannel eventChannel;
-  private AHDevicePlugin plugin;
   private AojEventSink mEventSink;
   private static final int REQUEST_ENABLE_BT = 1;
 
@@ -59,21 +58,22 @@ public class AojDevicePlugin implements FlutterPlugin, MethodCallHandler, Stream
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
 
     Context context = flutterPluginBinding.getApplicationContext();
-    plugin = AHDevicePlugin.getInstance();
-    plugin.initPlugin(context);
-    plugin.registerReceiver(context);
-    plugin.registerMessageService();
-    Log.d("DEBUG", "AOJ SDK Version:" + plugin.getVersion());
-    plugin.openDebugMode("plugin.debug");
 
+    AHDevicePlugin.getInstance().initPlugin(context);
+    AHDevicePlugin.getInstance().registerReceiver(context);
+    AHDevicePlugin.getInstance().registerMessageService();
+    Log.d("DEBUG", "AOJ SDK Version:" + plugin.getVersion());
+    AHDevicePlugin.getInstance().openDebugMode("plugin.debug");
+
+    // Method channel for Flutter
     methodChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "aoj_device_plugin");
     methodChannel.setMethodCallHandler(this);
 
+    // Event channel for Flutter
     eventChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), "aoj_device_plugin_stream");
     eventChannel.setStreamHandler(this);
 
     //AOJ device listener
-
     BTManagerStatus sdkStatus = AHDevicePlugin.getInstance().getManagerStatus();
     if(sdkStatus == BTManagerStatus.Free){
       List<BTDeviceType> types=new ArrayList<BTDeviceType>();
@@ -81,11 +81,11 @@ public class AojDevicePlugin implements FlutterPlugin, MethodCallHandler, Stream
       types.add(BTDeviceType.Oximeter);
 
       BTScanFilter filter = new BTScanFilter(types);
-      plugin.searchDevice(filter, new OnSearchingListener() {
+      AHDevicePlugin.getInstance().searchDevice(filter, new OnSearchingListener() {
         @Override
         public void onSearchResults(BTDeviceInfo device) {
           if(device.getMacAddress() == null || device.getDeviceName() == null) return;
-          handleDiscoveredDevice(device);
+            handleDiscoveredDevice(device);
         }
       });
     } else {
@@ -143,19 +143,19 @@ public class AojDevicePlugin implements FlutterPlugin, MethodCallHandler, Stream
       }*/
 
       if (device == null) return;
-      Log.d("DEBUG", "Addded device - deviceMac: " + deviceMac);
+      Log.d("DEBUG", "Adding device: " + deviceMac);
 
-      BTManagerStatus sdkStatus = plugin.getManagerStatus();
-      //Log.d("DEBUG", "sdkStatus == " + sdkStatus.toString());
+      BTManagerStatus sdkStatus = AHDevicePlugin.getInstance().getManagerStatus();
+      Log.d("DEBUG", "sdkStatus == " + sdkStatus.toString());
       if(sdkStatus == BTManagerStatus.Scanning){
-        plugin.stopSearch();
+        AHDevicePlugin.getInstance().stopSearch();
       }
       if(sdkStatus == BTManagerStatus.Syncing){
         return ;
       }
 
       if(sdkStatus == BTManagerStatus.Free){
-        plugin.startAutoConnect(new OnSyncingListener() {
+        AHDevicePlugin.getInstance().startAutoConnect(new OnSyncingListener() {
           @Override
           public void onStateChanged(String broadcastId, BTConnectState state) {
             Log.d("DEBUG", "STATE CHANGED " + broadcastId + " to state: " + state.toString());
@@ -190,8 +190,8 @@ public class AojDevicePlugin implements FlutterPlugin, MethodCallHandler, Stream
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     methodChannel.setMethodCallHandler(null);
     eventChannel.setStreamHandler(null);
-    plugin.clearScanCache();
-    plugin.stopAutoConnect();
+    AHDevicePlugin.getInstance().clearScanCache();
+    AHDevicePlugin.getInstance().stopAutoConnect();
   }
 
   private Map<String, Object> serializeBTDeviceInfo(BTDeviceInfo object) {
