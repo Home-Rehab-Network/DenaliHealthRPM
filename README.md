@@ -17,6 +17,8 @@ samples, guidance on mobile development, and a full API reference.
 
 You can run 
 
+```cd example```
+
 ```flutter run```
 
 inside example folder - tested with flutter version 3.19.1 and Dart 3.3.0. 
