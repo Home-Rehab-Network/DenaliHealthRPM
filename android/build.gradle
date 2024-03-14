@@ -54,3 +54,8 @@ android {
         }
     }
 }
+
+dependencies {
+    implementation files('libs/aoj-device-plugin-1.0.0-beta18.jar')
+    //implementation files('libs/aoj-device-plugin-1.0.0-beta18.jar')
+}
