@@ -23,9 +23,6 @@ abstract class AojDevicePluginPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
   Future<String?> connectToDevice(dynamic device) {
     return AojDevicePluginPlatform.instance.connectToDevice(device);
   }

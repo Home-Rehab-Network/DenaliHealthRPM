@@ -12,12 +12,6 @@ class MethodChannelAojDevicePlugin extends AojDevicePluginPlatform {
   //final eventChannel = const EventChannel('aoj_device_plugin_stream');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
-  }
-
-  @override
   Future<String?> connectToDevice(dynamic device) async {
     final result = await methodChannel.invokeMethod<String>('connectToDevice', <String, dynamic>{
       'arg1': device,
@@ -28,11 +22,6 @@ class MethodChannelAojDevicePlugin extends AojDevicePluginPlatform {
   MethodChannelAojDevicePlugin() {
     setupListener();
   }
-/*
-  @override
-  Stream<dynamic> aojDevicePluginStream() {
-    return eventChannel.receiveBroadcastStream();
-  }*/
 
   void setupListener() {
     methodChannel.setMethodCallHandler(_handleMethod);

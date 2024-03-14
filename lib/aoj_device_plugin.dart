@@ -5,10 +5,6 @@ import 'package:flutter/services.dart';
 class AojDevicePlugin {
   static const EventChannel _eventChannel = EventChannel('aoj_device_plugin_stream');
 
-  Future<String?> getPlatformVersion() {
-    return AojDevicePluginPlatform.instance.getPlatformVersion();
-  }
-
   Future<String?> connectToDevice(dynamic device) {
     return AojDevicePluginPlatform.instance.connectToDevice(device);
   }
